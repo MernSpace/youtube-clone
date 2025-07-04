@@ -1,0 +1,17 @@
+import { initTRPC } from '@trpc/server'
+import { cache } from 'react'
+
+export const createTRPCContex = cache(async () => {
+    return { userId: "123" }
+})
+
+
+const t = initTRPC.create({
+    /**
+     * @see https://trpc.io/docs/server/data-transformers 
+    */
+})
+
+export const createTRPRouter = t.router;
+export const createCallerFactory = t.createCallerFactory;
+export const baseProcedure = t.procedure;
