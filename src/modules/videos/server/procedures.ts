@@ -30,7 +30,7 @@ export const videosRouter = createTRPRouter({
                     .where(inArray(videoReactions.userId, userId ? [userId] : []))
             )
 
-            const viewerSubscriptions = db.$with("viewer_subscriptions").as(
+            const viewerSubscriptions = db.$with("subscriptions").as(
                 db
                     .select()
                     .from(subscriptions)
