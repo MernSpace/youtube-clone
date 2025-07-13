@@ -11,7 +11,7 @@ interface VideoMenuPrpos {
 
 export const VideoMenu = ({
     videoId,
-    variant,
+    variant = "ghost",
     onRemove
 }: VideoMenuPrpos) => {
 
