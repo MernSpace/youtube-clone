@@ -8,8 +8,10 @@ import { subscriptionsRouter } from '@/modules/subscriptions/server/procedures';
 import { commentsRouter } from '@/modules/comments/server/procedures';
 import { commentReactionsRouter } from '@/modules/comment-reactions/server/procedures';
 import { suggestionsRouter } from '@/modules/suggestions/server/procedures';
+import { searchRouter } from '@/modules/search/server/procedures';
 export const appRouter = createTRPRouter({
     studio: studioRouter,
+    search: searchRouter,
     categories: categoriesRouter,
     videos: videosRouter,
     comments: commentsRouter,

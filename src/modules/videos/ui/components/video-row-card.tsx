@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useMemo } from "react";
 import { VideoMenu } from "./video-menu";
-import { VideoThumbnail } from "./video-thumbnail";
+import { VideoThumbnail, VideoThumbnailSkeleton } from "./video-thumbnail";
 import { VideoGetManyOutput } from "../../types";
 import Link from "next/link";
 import { da } from "date-fns/locale";
@@ -46,14 +46,30 @@ interface VideoRowCardProps extends VariantProps<typeof videoRowCardVariants> {
     onRemove?: () => void;
 }
 
-export const VideoRowCardSkeleton = () => {
+export const VideoRowCardSkeleton = ({ size = "default" }: VariantProps<typeof videoRowCardVariants>) => {
     return (
-        <div className="flex gap-4">
-            <Skeleton className="w-[38%] h-32" />
-            <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-4 w-1/4" />
+        <div className={videoRowCardVariants({ size })}>
+            <div className="relative aspect-video">
+                <VideoThumbnailSkeleton />
+            </div>
+            <div className="flex-1 min-w-0">
+                <div className="flex justify-between gap-x-2">
+                    <div className="flex-1 min-w-0">
+                        <Skeleton className={cn("h-5 w-[40%]", size === "compact" && "h-4 w-[40%]")} />
+                        {size === "default" && (
+                            <>
+                                <Skeleton className="h-4 w-[20%] mt-1" />
+                                <div className="flex items-center gap-2 my-3">
+                                    <Skeleton className="size-8 rounded-full" />
+                                    <Skeleton className="h-4 w-24" />
+                                </div>
+                            </>
+                        )}
+                        {size === "compact" && (
+                            <Skeleton className="h-4 w-[50%] mt-1" />
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -61,7 +77,7 @@ export const VideoRowCardSkeleton = () => {
 
 export const VideoRowCard = ({
     data,
-    size,
+    size = "default",
     onRemove
 }: VideoRowCardProps) => {
 
