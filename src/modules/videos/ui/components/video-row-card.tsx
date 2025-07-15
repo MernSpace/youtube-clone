@@ -49,7 +49,7 @@ interface VideoRowCardProps extends VariantProps<typeof videoRowCardVariants> {
 export const VideoRowCardSkeleton = ({ size = "default" }: VariantProps<typeof videoRowCardVariants>) => {
     return (
         <div className={videoRowCardVariants({ size })}>
-            <div className="relative aspect-video">
+            <div className="relative">
                 <VideoThumbnailSkeleton />
             </div>
             <div className="flex-1 min-w-0">

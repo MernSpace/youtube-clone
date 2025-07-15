@@ -4,6 +4,7 @@ import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, Side
 import { FlameIcon, HomeIcon, icons, PlaySquareIcon } from "lucide-react"
 import Link from "next/link"
 import { useAuth, useClerk } from "@clerk/nextjs"
+import { usePathname } from "next/navigation"
 
 const items = [
     {
@@ -29,6 +30,7 @@ const items = [
 export const MainSection = () => {
     const clerk = useClerk()
     const { isSignedIn } = useAuth()
+    const pathname = usePathname()
 
     return (
         <SidebarGroup>
@@ -40,7 +42,7 @@ export const MainSection = () => {
                                 <SidebarMenuButton
                                     tooltip={item.title}
                                     asChild
-                                    isActive={false}
+                                    isActive={pathname === item.url}
                                     onClick={(e) => {
                                         if (!isSignedIn && item.auth) {
                                             e.preventDefault();

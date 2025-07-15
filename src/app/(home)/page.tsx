@@ -14,6 +14,7 @@ interface pageProps {
 const Page = async ({ searchParams }: pageProps) => {
   const { categoryId } = await searchParams;
   void trpc.categories.getMany.prefetch()
+  void trpc.videos.getMany.prefetchInfinite({ categoryId, limit: DEFAULT_LIMIT })
 
   return (
     <HydrateClient>
