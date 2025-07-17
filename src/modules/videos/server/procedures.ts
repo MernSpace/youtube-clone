@@ -162,6 +162,7 @@ export const videosRouter = createTRPRouter({
         .input(
             z.object({
                 categoryId: z.string().uuid().nullish(),
+                userId: z.string().uuid().nullish(),
                 cursor: z.object({
                     id: z.string().uuid(),
                     updatedAt: z.date()
@@ -174,7 +175,7 @@ export const videosRouter = createTRPRouter({
 
         .query(async ({ input }) => {
 
-            const { cursor, limit, categoryId } = input;
+            const { cursor, limit, categoryId, userId } = input;
 
             const data = await db.select({
                 ...getTableColumns(videos),
@@ -195,6 +196,7 @@ export const videosRouter = createTRPRouter({
 
                     and(
                         eq(videos.visibility, "public"),
+                        userId ? eq(videos.userId, userId) : undefined,
                         categoryId ? eq(videos.categoryId, categoryId) : undefined,
                         cursor
                             ? or(
@@ -245,7 +247,7 @@ export const videosRouter = createTRPRouter({
                     .where(inArray(videoReactions.userId, userId ? [userId] : []))
             )
 
-            const viewerSubscriptions = db.$with("subscriptions").as(
+            const viewerSubscriptions = db.$with("viewer_subscriptions").as(
                 db
                     .select()
                     .from(subscriptions)
@@ -254,7 +256,7 @@ export const videosRouter = createTRPRouter({
 
 
             const [existingVideo] = await db
-                .with(viewerReactions)
+                .with(viewerReactions, viewerSubscriptions)
                 .select({
                     ...getTableColumns(videos),
                     user: {
