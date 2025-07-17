@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { eq, and, or, lt, desc } from 'drizzle-orm'
+import { eq, and, or, lt, desc, getTableColumns } from 'drizzle-orm'
 import { db } from '@/db'
-import { videos } from '@/db/schema'
+import { comments, users, videoReactions, videos, videoViews } from '@/db/schema'
 import { createTRPRouter, protectedProcedure } from '@/trpc/init'
 import { TRPCError } from '@trpc/server'
 export const studioRouter = createTRPRouter({
@@ -41,20 +41,34 @@ export const studioRouter = createTRPRouter({
 
             const { cursor, limit } = input;
             const { id: userId } = ctx.user;
-            const data = await db.select().from(videos).where(
-                and(
-                    eq(videos.userId, userId),
-                    cursor
-                        ? or(
-                            lt(videos.updatedAt, cursor.updatedAt),
-                            and(
-                                eq(videos.updatedAt, cursor.updatedAt),
-                                lt(videos.id, cursor.id)
+            const data = await db.select({
+                ...getTableColumns(videos),
+                viewCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+                commentCount: db.$count(comments, eq(comments.videoId, videos.id)),
+                likeCount: db.$count(
+                    videoReactions,
+                    and(
+                        eq(videoReactions.type, 'like'),
+                        eq(videoReactions.videoId, videos.id)
+                    )
+                ),
+                user: users
+            }).from(videos)
+                .innerJoin(users, eq(videos.userId, users.id))
+                .where(
+                    and(
+                        eq(videos.userId, userId),
+                        cursor
+                            ? or(
+                                lt(videos.updatedAt, cursor.updatedAt),
+                                and(
+                                    eq(videos.updatedAt, cursor.updatedAt),
+                                    lt(videos.id, cursor.id)
+                                )
                             )
-                        )
-                        : undefined
-                )
-            ).orderBy(desc(videos.updatedAt), desc(videos.id))
+                            : undefined
+                    )
+                ).orderBy(desc(videos.updatedAt), desc(videos.id))
                 .limit(limit + 1)
 
             const hasMore = data.length > limit;
