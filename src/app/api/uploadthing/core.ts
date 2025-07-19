@@ -8,7 +8,6 @@ import z from "zod";
 
 const f = createUploadthing();
 
-console.log("core file load")
 
 
 export const ourFileRouter = {

@@ -4,7 +4,6 @@ import { ResponsiveModal } from "@/components/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_LIMIT } from "@/constants";
 import { trpc } from "@/trpc/client";
-import { TRPCBuilder } from "@trpc/server";
 import { Loader2Icon, SquareCheckIcon, SquareIcon } from "lucide-react";
 import { toast } from "sonner";
 

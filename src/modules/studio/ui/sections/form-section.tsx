@@ -9,7 +9,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { CopyCheckIcon, CopyIcon, Globe2Icon, ImagePlusIcon, LockIcon, MoreHorizontal, MoreVerticalIcon, RotateCcwIcon, RotateCcwSquareIcon, SparkleIcon, SparklesIcon, TrashIcon } from "lucide-react";
+import { CopyCheckIcon, CopyIcon, Globe2Icon, ImagePlusIcon, LockIcon, MoreHorizontal, MoreVerticalIcon, RotateCcwIcon, RotateCcwSquareIcon, SparklesIcon, TrashIcon } from "lucide-react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from "@/components/ui/input";
@@ -35,7 +35,6 @@ import { videoUpdateSchema } from "@/db/schema";
 import { toast } from "sonner";
 import { VideoPlayer } from "@/modules/videos/ui/components/video-player";
 import Link from "next/link";
-import { on } from "node:stream";
 import { snakeCaseToTitle } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -311,7 +310,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                         <div className="flex flex-col gap-y-1">
                                             <p className="text-muted-foreground text-xs">Video link</p>
                                             <div className="flex items-center gap-x-2">
-                                                <Link href={`/videos/${video.id}`}>
+                                                <Link prefetch href={`/videos/${video.id}`}>
                                                     <p className="line-clamp-1 text-sm text-blue-500">{fullUrl}</p></Link>
                                                 <Button
                                                     type="button"

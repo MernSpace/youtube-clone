@@ -11,7 +11,6 @@ import {
 import { mux } from '@/lib/mux';
 import { db } from '@/db';
 import { videos } from '@/db/schema';
-import { ResizableHandle } from '@/components/ui/resizable';
 import { UTApi } from 'uploadthing/server';
 
 const SIGNING_SECRET = process.env.MUX_WEBHOOK_SECRET!;

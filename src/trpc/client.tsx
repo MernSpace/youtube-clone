@@ -21,8 +21,7 @@ function getQueryClient() {
 function getUrl() {
     const base = (() => {
         if (typeof window !== 'undefined') return '';
-        console.log(APP_URL
-        )
+
         return APP_URL;
     })();
     return `${base}/api/trpc`

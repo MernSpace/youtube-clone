@@ -51,7 +51,7 @@ export const UserPageInfo = ({
     const { userId, isLoaded } = useAuth()
     const clerk = useClerk()
 
-    const { isPending, onClick } = UseSubscription({
+    const { isPanding, onClick } = UseSubscription({
         userId: user.id,
         isSubscribed: user.viewerSubscribed
     })
@@ -62,7 +62,7 @@ export const UserPageInfo = ({
                 <div className="flex items-center gap-3">
                     <UserAvatar
                         size="lg"
-                        imageUrl={user.imageUrl}
+                        imageUrl={user.imageUrl || "/user-placeholder.svg"}
                         name={user.name}
                         className="h-[60px] w-[60px]"
                         onClick={() => {
@@ -86,11 +86,11 @@ export const UserPageInfo = ({
                         asChild
                         className="w-full rounded-full mt-1"
                     >
-                        <Link href="/studio">Go to studio</Link>
+                        <Link prefetch href="/studio">Go to studio</Link>
                     </Button>
                 ) : (
                     <SubscriptionButton
-                        disabled={isPending || !isLoaded}
+                        disabled={isPanding || !isLoaded}
                         isSubscribed={user.viewerSubscribed}
                         onClick={onClick}
                         className="w-full mt-3"
@@ -100,7 +100,7 @@ export const UserPageInfo = ({
             <div className="hidden md:flex items-center gap-4">
                 <UserAvatar
                     size="xl"
-                    imageUrl={user.imageUrl}
+                    imageUrl={user.imageUrl || "/user-placeholder.svg"}
                     name={user.name}
                     className={cn(userId === user.clerkId && "cursor-pointer hover:opacity-80 transition-opacity duration-300")}
                     onClick={() => {
@@ -123,11 +123,11 @@ export const UserPageInfo = ({
                             asChild
                             className="rounded-full mt-1"
                         >
-                            <Link href="/studio">Go to studio</Link>
+                            <Link prefetch href="/studio">Go to studio</Link>
                         </Button>
                     ) : (
                         <SubscriptionButton
-                            disabled={isPending || !isLoaded}
+                            disabled={isPanding || !isLoaded}
                             isSubscribed={user.viewerSubscribed}
                             onClick={onClick}
                             className="mt-3"

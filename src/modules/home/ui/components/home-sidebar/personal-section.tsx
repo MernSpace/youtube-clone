@@ -1,7 +1,7 @@
 'use client'
 
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
-import { FlameIcon, HistoryIcon, HomeIcon, icons, ListVideoIcon, PlaySquareIcon, ThumbsUpIcon } from "lucide-react"
+import { HistoryIcon, ListVideoIcon, ThumbsUpIcon } from "lucide-react"
 import Link from "next/link"
 
 const items = [
@@ -53,7 +53,7 @@ export const PersonalSection = () => {
                                         }
                                     }}
                                 >
-                                    <Link href={item.url} className="flex items-center gap-4">
+                                    <Link prefetch href={item.url} className="flex items-center gap-4">
                                         <item.icon />
                                         <span className="text-sm">{item.title}</span>
                                     </Link>

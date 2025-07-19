@@ -10,14 +10,16 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 
-interface CommentFormprops {
+interface CommentFormProps {
     videoId: string;
     onSuccess?: () => void;
     onCancel?: () => void;
     parentId?: string;
-    variant?: "comment" | "reply"
+    variant?: "comment" | "reply";
 }
 
+// Create form-specific schema by omitting userId
+const commentFormSchema = commentInsertSchema.omit({ userId: true });
 
 export const CommentForm = ({
     videoId,
@@ -25,51 +27,61 @@ export const CommentForm = ({
     parentId,
     variant = "comment",
     onCancel
+}: CommentFormProps) => {
+    const { user } = useUser();
+    const clerk = useClerk();
+    const utils = trpc.useUtils();
 
-}: CommentFormprops) => {
-    const { user } = useUser()
-
-    const form = useForm<z.infer<typeof commentInsertSchema>>({
-        resolver: zodResolver(commentInsertSchema.omit({ userId: true })),
+    const form = useForm<z.infer<typeof commentFormSchema>>({
+        resolver: zodResolver(commentFormSchema),
         defaultValues: {
             parentId: parentId,
             videoId,
             value: ""
-
         }
-    })
-    const utils = trpc.useUtils()
-    const clerk = useClerk()
-    const create = trpc.comments.create.useMutation({
-        onSuccess: () => {
-            utils.comments.getMany.invalidate({ videoId })
-            utils.comments.getMany.invalidate({ videoId, parentId })
-            form.reset()
-            toast.success("Comment added")
-            onSuccess?.()
-        },
-        onError: (error) => {
-            toast.error("Something went worng")
-            if (error.data?.code === "UNAUTHORIZED") {
-                clerk.openSignIn()
-            }
-        }
-
     });
 
+    const create = trpc.comments.create.useMutation({
+        onSuccess: () => {
+            utils.comments.getMany.invalidate({ videoId });
+            if (parentId) {
+                utils.comments.getMany.invalidate({ videoId, parentId });
+            }
+            form.reset();
+            toast.success(variant === "reply" ? "Reply added" : "Comment added");
+            onSuccess?.();
+        },
+        onError: (error) => {
+            toast.error("Something went wrong");
+            if (error.data?.code === "UNAUTHORIZED") {
+                clerk.openSignIn();
+            }
+        }
+    });
 
-    const handleSubmit = (value: z.infer<typeof commentInsertSchema>) => {
-        create.mutate(value)
-    }
+    const handleSubmit = (values: z.infer<typeof commentFormSchema>) => {
+        if (!user?.id) {
+            clerk.openSignIn();
+            return;
+        }
+
+        // Create the full payload with userId
+        const fullPayload: z.infer<typeof commentInsertSchema> = {
+            ...values,
+            userId: user.id
+        };
+
+        create.mutate(fullPayload);
+    };
+
     const handleCancel = () => {
         form.reset();
-        onCancel?.()
-    }
+        onCancel?.();
+    };
+
     return (
         <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(handleSubmit)}
-                className="flex gap-4 group">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex gap-4 group">
                 <UserAvatar
                     size="lg"
                     imageUrl={user?.imageUrl || "/user-placeholder.svg"}
@@ -85,7 +97,9 @@ export const CommentForm = ({
                                     <Textarea
                                         {...field}
                                         placeholder={
-                                            variant === "reply" ? "Reply to this cpmment" : "Add a comment..."
+                                            variant === "reply"
+                                                ? "Reply to this comment"
+                                                : "Add a comment..."
                                         }
                                         className="resize-none bg-transparent overflow-hidden min-h-0"
                                     />
@@ -93,22 +107,28 @@ export const CommentForm = ({
                                 <FormMessage />
                             </FormItem>
                         )}
-                    ></FormField>
+                    />
                     <div className="justify-end gap-2 mt-2 flex">
                         {onCancel && (
-                            <Button variant="ghost" type="button" onClick={handleCancel}>
+                            <Button
+                                variant="ghost"
+                                type="button"
+                                onClick={handleCancel}
+                                disabled={create.isPending}
+                            >
                                 Cancel
                             </Button>
                         )}
                         <Button
-                            disabled={create.isPending}
+                            disabled={create.isPending || !form.watch("value")}
                             type="submit"
                             size="sm"
-                        >{variant === "reply" ? "Reply" : "Comment"}</Button>
+                        >
+                            {variant === "reply" ? "Reply" : "Comment"}
+                        </Button>
                     </div>
                 </div>
-
             </form>
         </Form>
-    )
-}
+    );
+};

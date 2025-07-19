@@ -13,7 +13,6 @@ import { VideoMenu } from "./video-menu";
 import { VideoThumbnail, VideoThumbnailSkeleton } from "./video-thumbnail";
 import { VideoGetManyOutput } from "../../types";
 import Link from "next/link";
-import { da } from "date-fns/locale";
 
 const videoRowCardVariants = cva("group flex min-w-0", {
     variants: {
@@ -96,7 +95,7 @@ export const VideoRowCard = ({
 
     return (
         <div className={videoRowCardVariants({ size })}>
-            <Link href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
+            <Link prefetch href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
                 <VideoThumbnail
                     imageUrl={data.thumbnailUrl}
                     previewUrl={data.previewUrl}
@@ -106,7 +105,7 @@ export const VideoRowCard = ({
             </Link>
             <div className="flex-1 min-w-0">
                 <div className="flex justify-between gap-x-2">
-                    <Link href={`/videos/${data.id}`} className="flex-1 min-w-0">
+                    <Link prefetch href={`/videos/${data.id}`} className="flex-1 min-w-0">
                         <h3
                             className={cn("font-medium line-clamp-2", size === "compact" ? "text-sm" : "text-base")}
                         >{data.title}</h3>
@@ -120,7 +119,7 @@ export const VideoRowCard = ({
                                 <div className="flex items-center gap-2 my-3">
                                     <UserAvatar
                                         size="sm"
-                                        imageUrl={data.user.imageUrl}
+                                        imageUrl={data.user.imageUrl || "/user-placeholder.svg"}
                                         name={data.user.name}
                                     />
                                     <UserInfo

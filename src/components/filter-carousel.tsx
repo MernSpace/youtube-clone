@@ -21,8 +21,10 @@ interface FilterCarouselProps {
     data: {
         value: string,
         label: string
-    }
+    }[]
 }
+
+
 
 export const FilterCarousel = ({
     value,
@@ -30,6 +32,9 @@ export const FilterCarousel = ({
     data,
     isLoading
 }: FilterCarouselProps) => {
+
+
+
     const [api, setApi] = useState<CarouselApi>();
     const [current, setCurrent] = useState(0);
     const [count, setCount] = useState(0)

@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/trpc/client";
-import { util } from "zod/v4/core";
 
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),

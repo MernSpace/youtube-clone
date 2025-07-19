@@ -37,7 +37,6 @@ export async function POST(req: Request) {
         const payload = await req.json()
         const body = JSON.stringify(payload)
 
-        console.log('Webhook event type:', payload.type)
 
         // Verify webhook signature
         let evt: WebhookEvent
@@ -53,7 +52,6 @@ export async function POST(req: Request) {
         }
 
         const eventType = evt.type
-        console.log('Processing event type:', eventType)
 
         // Handle different event types
         if (eventType === "user.created") {
@@ -74,7 +72,6 @@ export async function POST(req: Request) {
                     name: userName,
                     imageUrl: userImageUrl
                 })
-                console.log('User created successfully:', data.id)
             } catch (dbError) {
                 console.error('Database error creating user:', dbError)
                 return new Response('Database error', { status: 500 })
@@ -91,7 +88,6 @@ export async function POST(req: Request) {
 
             try {
                 await db.delete(users).where(eq(users.clerkId, data.id))
-                console.log('User deleted successfully:', data.id)
             } catch (dbError) {
                 console.error('Database error deleting user:', dbError)
                 return new Response('Database error', { status: 500 })
@@ -114,7 +110,6 @@ export async function POST(req: Request) {
                     name: userName,
                     imageUrl: userImageUrl
                 }).where(eq(users.clerkId, data.id))
-                console.log('User updated successfully:', data.id)
             } catch (dbError) {
                 console.error('Database error updating user:', dbError)
                 return new Response('Database error', { status: 500 })

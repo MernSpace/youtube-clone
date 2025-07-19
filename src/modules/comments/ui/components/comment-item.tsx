@@ -15,10 +15,8 @@ import { trpc } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, ChevronUpIcon, MessageSquareIcon, MoreVerticalIcon, ThumbsUpIcon, Trash2Icon } from "lucide-react";
 import { useAuth, useClerk } from "@clerk/nextjs";
-import { error } from "console";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { CommentForm } from "./comment-form";
 import { CommentReplies } from "./comment-replies";
@@ -74,18 +72,18 @@ export const CommentItem = ({ comment, variant = "comment" }: CommentItemProps) 
     return (
         <div className="">
             <div className="flex gap-4">
-                <Link
+                <Link prefetch
                     href={`/users/${comment.userId}`}
                     className=""
                 >
                     <UserAvatar
                         size={variant === "comment" ? "lg" : "sm"}
-                        imageUrl={comment.user.imageUrl}
+                        imageUrl={comment.user.imageUrl || "/user-placeholder.svg"}
                         name={comment.user.name}
                     />
                 </Link>
                 <div className="flex-1 min-w-0">
-                    <Link href={`/users/${comment.userId}`} className="hover:underline">
+                    <Link prefetch href={`/users/${comment.userId}`} className="hover:underline">
                         <div className="flex items-center gap-2 mb-0.5">
                             <span className="font-medium text-sm pb-0.5">
                                 {comment.user?.name || "Anonymous"}

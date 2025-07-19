@@ -29,7 +29,7 @@ export const UserAvatar = ({
     name,
     className,
     onClick,
-    size, // ✅ Destructure size from props
+    size,
 }: UserAvatarProps) => {
     return (
         <Avatar className={cn(avatarVariants({ size }), className)} onClick={onClick}>

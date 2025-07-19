@@ -1,6 +1,6 @@
 
 
-import { commentInsertSchema, commentReactions, comments, users } from '@/db/schema';
+import { commentReactions, comments, users } from '@/db/schema';
 import { baseProcedure, createTRPRouter, protectedProcedure } from '@/trpc/init';
 import { db } from '@/db'; // Make sure to import your db instance
 import z from 'zod';
